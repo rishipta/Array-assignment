@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 256
+
+typedef struct {
+    char arr[1000];
+    int front, rear;
+} Queue;
+
+void init(Queue *q) {
+    q->front = q->rear = -1;
+}
+
+int isEmpty(Queue *q) {
+    return q->front == -1;
+}
+
+void enqueue(Queue *q, char c) {
+    if (q->rear == 999) return;
+    if (q->front == -1) q->front = 0;
+    q->arr[++q->rear] = c;
+}
+
+char dequeue(Queue *q) {
+    if (isEmpty(q)) return '\0';
+    char c = q->arr[q->front];
+    if (q->front == q->rear)
+        q->front = q->rear = -1;
+    else
+        q->front++;
+    return c;
+}
+
+int main() {
+    char str[100];
+    printf("Enter characters (space separated): ");
+    fgets(str, sizeof(str), stdin);
+
+    Queue q;
+    init(&q);
+
+    int freq[MAX] = {0};
+
+    // Process each character
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == ' ') continue;
+
+        char ch = str[i];
+        freq[ch]++;
+        enqueue(&q, ch);
+
+        // Remove repeating chars from queue front
+        while (!isEmpty(&q) && freq[q.arr[q.front]] > 1)
+            dequeue(&q);
+
+        // Print first non-repeating character
+        if (isEmpty(&q))
+            printf("-1 ");
+        else
+            printf("%c ", q.arr[q.front]);
+    }
+
+    return 0;
+}
