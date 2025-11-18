@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 100
+
+typedef struct {
+    int arr[SIZE];
+    int front, rear;
+} Queue;
+
+void init(Queue *q) { q->front = q->rear = -1; }
+
+int isEmpty(Queue *q) { return q->front == -1; }
+
+void enqueue(Queue *q, int val) {
+    if (q->rear == SIZE - 1) return;
+    if (q->front == -1) q->front = 0;
+    q->arr[++q->rear] = val;
+}
+
+int dequeue(Queue *q) {
+    if (isEmpty(q)) return -1;
+    int val = q->arr[q->front];
+    if (q->front == q->rear) q->front = q->rear = -1;
+    else q->front++;
+    return val;
+}
+
+typedef struct {
+    Queue q1, q2;
+} Stack;
+
+void push(Stack *s, int x) {
+    enqueue(&s->q2, x);
+
+    while (!isEmpty(&s->q1))
+        enqueue(&s->q2, dequeue(&s->q1));
+
+    Queue temp = s->q1;
+    s->q1 = s->q2;
+    s->q2 = temp;
+}
+
+int pop(Stack *s) {
+    return dequeue(&s->q1);
+}
+
+int main() {
+    Stack s;
+    init(&s.q1);
+    init(&s.q2);
+
+    push(&s, 10);
+    push(&s, 20);
+    push(&s, 30);
+
+    printf("Pop: %d\n", pop(&s));
+    printf("Pop: %d\n", pop(&s));
+
+    return 0;
+}
