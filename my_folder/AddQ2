@@ -1,0 +1,60 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+// Finds the index of the minimum element in queue up to size 'sortedIndex'
+int minIndex(queue<int> &q, int sortedIndex) {
+    int minIndex = -1;
+    int minValue = INT_MAX;
+    int size = q.size();
+
+    for (int i = 0; i < size; i++) {
+        int curr = q.front();
+        q.pop();
+
+        if (curr < minValue && i <= sortedIndex) {
+            minIndex = i;
+            minValue = curr;
+        }
+        q.push(curr);
+    }
+    return minIndex;
+}
+
+// Moves the element at minIndex to rear
+void moveMinToRear(queue<int> &q, int minIndex) {
+    int size = q.size();
+    int minValue;
+    for (int i = 0; i < size; i++) {
+        int curr = q.front();
+        q.pop();
+
+        if (i != minIndex) q.push(curr);
+        else minValue = curr;
+    }
+    q.push(minValue);
+}
+
+void sortQueue(queue<int> &q) {
+    int n = q.size();
+    for (int i = 0; i < n; i++) {
+        int minIdx = minIndex(q, n - i - 1);
+        moveMinToRear(q, minIdx);
+    }
+}
+
+int main() {
+    queue<int> q;
+    q.push(11);
+    q.push(5);
+    q.push(4);
+    q.push(21);
+
+    sortQueue(q);
+
+    while (!q.empty()) {
+        cout << q.front() << " ";
+        q.pop();
+    }
+    return 0;
+}
