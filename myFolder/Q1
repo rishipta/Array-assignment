@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+// Create a new node
+struct Node* createNode(int val) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// (a) Insert at beginning
+void insertAtBeginning(int val) {
+    struct Node* newNode = createNode(val);
+    newNode->next = head;
+    head = newNode;
+}
+
+// (b) Insert at end
+void insertAtEnd(int val) {
+    struct Node* newNode = createNode(val);
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+    struct Node* temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+}
+
+// (c) Insert before/after a specific value
+void insertBefore(int target, int value) {
+    if (head == NULL) return;
+
+    if (head->data == target) {
+        insertAtBeginning(value);
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next && temp->next->data != target)
+        temp = temp->next;
+
+    if (temp->next == NULL) {
+        printf("Value %d not found.\n", target);
+        return;
+    }
+
+    struct Node* newNode = createNode(value);
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+void insertAfter(int target, int value) {
+    struct Node* temp = head;
+    while (temp && temp->data != target)
+        temp = temp->next;
+
+    if (!temp) {
+        printf("Value %d not found.\n", target);
+        return;
+    }
+
+    struct Node* newNode = createNode(value);
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+// (d) Delete from beginning
+void deleteBeginning() {
+    if (head == NULL) return;
+    struct Node* temp = head;
+    head = head->next;
+    free(temp);
+}
+
+// (e) Delete from end
+void deleteEnd() {
+    if (head == NULL) return;
+
+    if (head->next == NULL) {
+        free(head);
+        head = NULL;
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next->next != NULL)
+        temp = temp->next;
+
+    free(temp->next);
+    temp->next = NULL;
+}
+
+// (f) Delete specific node
+void deleteValue(int value) {
+    if (head == NULL) return;
+
+    if (head->data == value) {
+        deleteBeginning();
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next && temp->next->data != value)
+        temp = temp->next;
+
+    if (temp->next == NULL) {
+        printf("Value %d not found.\n", value);
+        return;
+    }
+
+    struct Node* delNode = temp->next;
+    temp->next = delNode->next;
+    free(delNode);
+}
+
+// (g) Search for a node
+void searchNode(int value) {
+    struct Node* temp = head;
+    int pos = 1;
+
+    while (temp) {
+        if (temp->data == value) {
+            printf("Found at position %d\n", pos);
+            return;
+        }
+        temp = temp->next;
+        pos++;
+    }
+    printf("Not found\n");
+}
+
+// (h) Display linked list
+void display() {
+    struct Node* temp = head;
+    while (temp) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    int choice, value, target;
+
+    while (1) {
+        printf("\n--- Menu ---\n");
+        printf("1. Insert at Beginning\n2. Insert at End\n3. Insert Before Value\n4. Insert After Value\n");
+        printf("5. Delete Beginning\n6. Delete End\n7. Delete Specific Value\n");
+        printf("8. Search\n9. Display\n10. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: printf("Value: "); scanf("%d", &value); insertAtBeginning(value); break;
+            case 2: printf("Value: "); scanf("%d", &value); insertAtEnd(value); break;
+            case 3: printf("Insert value: "); scanf("%d", &value);
+                    printf("Before which value: "); scanf("%d", &target);
+                    insertBefore(target, value); break;
+            case 4: printf("Insert value: "); scanf("%d", &value);
+                    printf("After which value: "); scanf("%d", &target);
+                    insertAfter(target, value); break;
+            case 5: deleteBeginning(); break;
+            case 6: deleteEnd(); break;
+            case 7: printf("Value to delete: "); scanf("%d", &value); deleteValue(value); break;
+            case 8: printf("Search value: "); scanf("%d", &value); searchNode(value); break;
+            case 9: display(); break;
+            case 10: exit(0);
+            default: printf("Invalid choice\n");
+        }
+    }
+}
