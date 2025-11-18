@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 5
+
+int cqueue[SIZE];
+int front = -1, rear = -1;
+
+int isFull() {
+    return (front == 0 && rear == SIZE - 1) || (rear + 1 == front);
+}
+
+int isEmpty() {
+    return front == -1;
+}
+
+void enqueue(int x) {
+    if (isFull()) {
+        printf("\nCircular Queue is FULL!\n");
+    } else {
+        if (front == -1) front = 0;
+        rear = (rear + 1) % SIZE;
+        cqueue[rear] = x;
+        printf("\nInserted %d\n", x);
+    }
+}
+
+void dequeue() {
+    if (isEmpty()) {
+        printf("\nCircular Queue is EMPTY!\n");
+    } else {
+        printf("\nDeleted: %d\n", cqueue[front]);
+
+        if (front == rear) {
+            front = rear = -1; // Queue becomes empty
+        } else {
+            front = (front + 1) % SIZE;
+        }
+    }
+}
+
+void peek() {
+    if (isEmpty()) {
+        printf("\nCircular Queue is EMPTY!\n");
+    } else {
+        printf("\nFront Element: %d\n", cqueue[front]);
+    }
+}
+
+void display() {
+    if (isEmpty()) {
+        printf("\nCircular Queue is EMPTY!\n");
+    } else {
+        printf("\nCircular Queue Elements: ");
+        int i = front;
+        while (1) {
+            printf("%d ", cqueue[i]);
+            if (i == rear) break;
+            i = (i + 1) % SIZE;
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int choice, value;
+
+    while (1) {
+        printf("\n--- CIRCULAR QUEUE MENU ---\n");
+        printf("1. Enqueue\n2. Dequeue\n3. Peek\n4. Display\n5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value: ");
+                scanf("%d", &value);
+                enqueue(value);
+                break;
+            case 2: dequeue(); break;
+            case 3: peek(); break;
+            case 4: display(); break;
+            case 5: exit(0);
+            default: printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
