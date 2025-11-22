@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct MaxHeap {
+    vector<int> heap;
+
+    // ---------- Insert key ----------
+    void push(int val) {
+        heap.push_back(val);
+        int i = heap.size() - 1;
+
+        // Fix heap upwards
+        while (i != 0 && heap[(i-1)/2] < heap[i]) {
+            swap(heap[i], heap[(i-1)/2]);
+            i = (i-1)/2;
+        }
+    }
+
+    // ---------- Remove max ----------
+    void pop() {
+        if (heap.empty()) return;
+
+        heap[0] = heap.back();
+        heap.pop_back();
+
+        // Fix heap downwards
+        heapify(0);
+    }
+
+    // ---------- Heapify ----------
+    void heapify(int i) {
+        int n = heap.size();
+        int largest = i;
+        int left = 2*i + 1;
+        int right = 2*i + 2;
+
+        if (left < n && heap[left] > heap[largest])
+            largest = left;
+
+        if (right < n && heap[right] > heap[largest])
+            largest = right;
+
+        if (largest != i) {
+            swap(heap[i], heap[largest]);
+            heapify(largest);
+        }
+    }
+
+    // ---------- Get max ----------
+    int top() {
+        if (heap.empty()) return -1;
+        return heap[0];
+    }
+
+    // ---------- Print heap ----------
+    void display() {
+        for (int x : heap) cout << x << " ";
+        cout << endl;
+    }
+};
+
+// ========== MAIN ==========
+int main() {
+    MaxHeap pq;
+
+    pq.push(10);
+    pq.push(40);
+    pq.push(20);
+    pq.push(30);
+
+    cout << "Priority Queue (Max-Heap): ";
+    pq.display();
+
+    cout << "Top element: " << pq.top() << endl;
+
+    pq.pop();
+    cout << "After deleting max: ";
+    pq.display();
+
+    return 0;
+}
