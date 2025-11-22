@@ -1,0 +1,151 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+// =================== INSERT INTO BST ===================
+Node* insertBST(Node* root, int key) {
+    if (!root) return new Node(key);
+
+    if (key < root->data)
+        root->left = insertBST(root->left, key);
+    else if (key > root->data)
+        root->right = insertBST(root->right, key);
+
+    return root; // no duplicates allowed
+}
+
+// =================== SEARCH (RECURSIVE) ===================
+Node* searchRecursive(Node* root, int key) {
+    if (!root || root->data == key)
+        return root;
+
+    if (key < root->data)
+        return searchRecursive(root->left, key);
+    else
+        return searchRecursive(root->right, key);
+}
+
+// =================== SEARCH (ITERATIVE) ===================
+Node* searchIterative(Node* root, int key) {
+    Node* curr = root;
+
+    while (curr) {
+        if (curr->data == key)
+            return curr;
+        else if (key < curr->data)
+            curr = curr->left;
+        else
+            curr = curr->right;
+    }
+    return nullptr;
+}
+
+// =================== MINIMUM ELEMENT ===================
+Node* findMin(Node* root) {
+    if (!root) return nullptr;
+
+    while (root->left)
+        root = root->left;
+    return root;
+}
+
+// =================== MAXIMUM ELEMENT ===================
+Node* findMax(Node* root) {
+    if (!root) return nullptr;
+
+    while (root->right)
+        root = root->right;
+    return root;
+}
+
+// =================== INORDER SUCCESSOR ===================
+Node* inorderSuccessor(Node* root, Node* target) {
+    if (!root || !target) return nullptr;
+
+    // Case 1: Right subtree exists => min of right subtree
+    if (target->right)
+        return findMin(target->right);
+
+    // Case 2: No right => walk from root
+    Node* succ = nullptr;
+    Node* curr = root;
+
+    while (curr) {
+        if (target->data < curr->data) {
+            succ = curr;
+            curr = curr->left;
+        } else if (target->data > curr->data) {
+            curr = curr->right;
+        } else break;
+    }
+    return succ;
+}
+
+// =================== INORDER PREDECESSOR ===================
+Node* inorderPredecessor(Node* root, Node* target) {
+    if (!root || !target) return nullptr;
+
+    // Case 1: Left subtree exists => max of left subtree
+    if (target->left)
+        return findMax(target->left);
+
+    // Case 2: No left => walk from root
+    Node* pred = nullptr;
+    Node* curr = root;
+
+    while (curr) {
+        if (target->data > curr->data) {
+            pred = curr;
+            curr = curr->right;
+        } else if (target->data < curr->data) {
+            curr = curr->left;
+        } else break;
+    }
+    return pred;
+}
+
+// =================== MAIN FUNCTION ===================
+int main() {
+    Node* root = nullptr;
+
+    int arr[] = {20, 10, 30, 5, 15, 25, 35};
+    for (int x : arr)
+        root = insertBST(root, x);
+
+    // Search Test
+    int key = 15;
+    cout << "Searching (Recursive): ";
+    cout << (searchRecursive(root, key) ? "Found\n" : "Not Found\n");
+
+    cout << "Searching (Iterative): ";
+    cout << (searchIterative(root, key) ? "Found\n" : "Not Found\n");
+
+    // Min & Max
+    cout << "Min element: " << findMin(root)->data << endl;
+    cout << "Max element: " << findMax(root)->data << endl;
+
+    // Successor & Predecessor
+    Node* target = searchRecursive(root, 20);
+    Node* succ = inorderSuccessor(root, target);
+    Node* pred = inorderPredecessor(root, target);
+
+    cout << "Inorder Successor of 20: ";
+    if (succ) cout << succ->data << endl;
+    else cout << "None\n";
+
+    cout << "Inorder Predecessor of 20: ";
+    if (pred) cout << pred->data << endl;
+    else cout << "None\n";
+
+    return 0;
+}
