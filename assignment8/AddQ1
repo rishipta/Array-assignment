@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+bool isLeaf(Node* node) {
+    return node && !node->left && !node->right;
+}
+
+int sumOfLeftLeaves(Node* root) {
+    if (!root) return 0;
+
+    int sum = 0;
+
+    if (isLeaf(root->left))
+        sum += root->left->data;
+
+    return sum + sumOfLeftLeaves(root->left) + sumOfLeftLeaves(root->right);
+}
+
+int main() {
+    /*
+            3
+           / \
+          9  20
+            /  \
+           15   7
+    */
+
+    Node* root = new Node(3);
+    root->left = new Node(9);
+    root->right = new Node(20);
+    root->right->left = new Node(15);
+    root->right->right = new Node(7);
+
+    cout << "Sum of left leaves = " << sumOfLeftLeaves(root);
+    return 0;
+}
