@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct DLL {
+    int data;
+    struct DLL *prev, *next;
+} DLL;
+
+DLL *head = NULL;
+
+DLL* createNode(int val) {
+    DLL *t = (DLL*)malloc(sizeof(DLL));
+    t->data = val;
+    t->prev = t->next = NULL;
+    return t;
+}
+
+void insertFirst(int val) {
+    DLL *t = createNode(val);
+    if (!head) { head = t; return; }
+
+    t->next = head;
+    head->prev = t;
+    head = t;
+}
+
+void insertLast(int val) {
+    DLL *t = createNode(val);
+    if (!head) { head = t; return; }
+
+    DLL *p = head;
+    while (p->next) p = p->next;
+
+    p->next = t;
+    t->prev = p;
+}
+
+void insertAfter(int key, int val) {
+    DLL *p = head;
+    while (p && p->data != key) p = p->next;
+    if (!p) { printf("Key not found!\n"); return; }
+
+    DLL *t = createNode(val);
+    t->next = p->next;
+    t->prev = p;
+
+    if (p->next) p->next->prev = t;
+    p->next = t;
+}
+
+void insertBefore(int key, int val) {
+    if (!head) return;
+    if (head->data == key) {
+        insertFirst(val);
+        return;
+    }
+
+    DLL *p = head;
+    while (p && p->data != key) p = p->next;
+    if (!p) { printf("Key not found!\n"); return; }
+
+    DLL *t = createNode(val);
+    t->next = p;
+    t->prev = p->prev;
+    p->prev->next = t;
+    p->prev = t;
+}
+
+void deleteNode(int key) {
+    DLL *p = head;
+    while (p && p->data != key) p = p->next;
+    if (!p) { printf("Key not found!\n"); return; }
+
+    if (p == head) head = p->next;
+    if (p->prev) p->prev->next = p->next;
+    if (p->next) p->next->prev = p->prev;
+
+    free(p);
+}
+
+void searchNode(int key) {
+    DLL *p = head;
+    while (p) {
+        if (p->data == key) { printf("Found!\n"); return; }
+        p = p->next;
+    }
+    printf("Not Found!\n");
+}
+
+void display() {
+    DLL *p = head;
+    printf("\nDoubly Linked List: ");
+    while (p) {
+        printf("%d ", p->data);
+        p = p->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    int choice, val, key;
+
+    while (1) {
+        printf("\n--- DOUBLY LINKED LIST MENU ---\n");
+        printf("1 Insert First\n2 Insert Last\n3 Insert After\n4 Insert Before\n");
+        printf("5 Delete\n6 Search\n7 Display\n8 Exit\n");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1: printf("Value: "); scanf("%d", &val); insertFirst(val); break;
+            case 2: printf("Value: "); scanf("%d", &val); insertLast(val); break;
+            case 3: printf("Key & Value: "); scanf("%d %d", &key, &val); insertAfter(key,val); break;
+            case 4: printf("Key & Value: "); scanf("%d %d", &key, &val); insertBefore(key,val); break;
+            case 5: printf("Delete: "); scanf("%d", &key); deleteNode(key); break;
+            case 6: printf("Search: "); scanf("%d", &key); searchNode(key); break;
+            case 7: display(); break;
+            case 8: return 0;
+        }
+    }
+}
