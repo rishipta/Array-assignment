@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    char data;
+    struct Node *prev, *next;
+} Node;
+
+Node *head = NULL;
+
+/* Create new node */
+Node* createNode(char ch) {
+    Node *t = (Node*)malloc(sizeof(Node));
+    t->data = ch;
+    t->prev = t->next = NULL;
+    return t;
+}
+
+/* Insert at end */
+void insertLast
