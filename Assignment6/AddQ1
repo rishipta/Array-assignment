@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node* createNode(int val) {
+    Node *t = (Node*)malloc(sizeof(Node));
+    t->data = val;
+    t->next = NULL;
+    return t;
+}
+
+void splitList(Node *head, Node **head1, Node **head2) {
+    Node *slow = head, *fast = head;
+
+    if (head == NULL || head->next == head) {
+        *head1 = head;
+        *head2 = NULL;
+        return;
+    }
+
+    while (fast->next != head && fast->next->next != head) {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+
+    fast = fast->next->next == head ? fast->next : fast;
+
+    *head1 = head;
+    *head2 = slow->next;
+
+    slow->next = *head1;
+    fast->next = *head2;
+}
+
+void print(Node *head) {
+    if (!head) { printf("Empty\n"); return; }
+    Node *p = head;
+    do {
+        printf("%d ", p->data);
+        p = p->next;
+    } while (p != head);
+    printf("\n");
+}
+
+int main() {
+    Node *head = createNode(10);
+    head->next = createNode(4);
+    head->next->next = createNode(9);
+    head->next->next->next = head;
+
+    Node *h1, *h2;
+    splitList(head, &h1, &h2);
+
+    printf("First Half: ");
+    print(h1);
+    printf("Second Half: ");
+    print(h2);
+
+    return 0;
+}
