@@ -1,0 +1,150 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *head = NULL;
+
+Node* createNode(int val) {
+    Node *t = (Node*)malloc(sizeof(Node));
+    t->data = val;
+    t->next = NULL;
+    return t;
+}
+
+void insertFirst(int val) {
+    Node *t = createNode(val);
+
+    if (head == NULL) {
+        head = t;
+        t->next = t;
+        return;
+    }
+
+    Node *p = head;
+    while (p->next != head) p = p->next;
+
+    t->next = head;
+    p->next = t;
+    head = t;
+}
+
+void insertLast(int val) {
+    Node *t = createNode(val);
+
+    if (head == NULL) {
+        head = t;
+        t->next = t;
+        return;
+    }
+
+    Node *p = head;
+    while (p->next != head) p = p->next;
+
+    p->next = t;
+    t->next = head;
+}
+
+void insertAfter(int key, int val) {
+    if (!head) return;
+
+    Node *p = head;
+    do {
+        if (p->data == key) {
+            Node *t = createNode(val);
+            t->next = p->next;
+            p->next = t;
+            return;
+        }
+        p = p->next;
+    } while (p != head);
+
+    printf("Key not found!\n");
+}
+
+void deleteNode(int key) {
+    if (!head) return;
+
+    Node *p = head, *prev = NULL;
+
+    do {
+        if (p->data == key) {
+            if (prev == NULL) {
+                Node *last = head;
+                while (last->next != head) last = last->next;
+
+                if (head->next == head) {
+                    free(head);
+                    head = NULL;
+                    return;
+                }
+
+                last->next = head->next;
+                Node *temp = head;
+                head = head->next;
+                free(temp);
+                return;
+            }
+
+            prev->next = p->next;
+            free(p);
+            return;
+        }
+
+        prev = p;
+        p = p->next;
+    } while (p != head);
+
+    printf("Key not found!\n");
+}
+
+void searchNode(int key) {
+    if (!head) return;
+
+    Node *p = head;
+    do {
+        if (p->data == key) {
+            printf("Found!\n");
+            return;
+        }
+        p = p->next;
+    } while (p != head);
+
+    printf("Not found!\n");
+}
+
+void display() {
+    if (!head) return;
+
+    Node *p = head;
+    printf("\nCircular List: ");
+    do {
+        printf("%d ", p->data);
+        p = p->next;
+    } while (p != head);
+    printf("\n");
+}
+
+int main() {
+    int choice, val, key;
+
+    while (1) {
+        printf("\n--- CIRCULAR LINKED LIST MENU ---\n");
+        printf("1 Insert First\n2 Insert Last\n3 Insert After\n");
+        printf("4 Delete Node\n5 Search\n6 Display\n7 Exit\n");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1: printf("Value: "); scanf("%d", &val); insertFirst(val); break;
+            case 2: printf("Value: "); scanf("%d", &val); insertLast(val); break;
+            case 3: printf("Key & Value: "); scanf("%d %d", &key, &val); insertAfter(key, val); break;
+            case 4: printf("Delete Value: "); scanf("%d", &key); deleteNode(key); break;
+            case 5: printf("Search: "); scanf("%d", &key); searchNode(key); break;
+            case 6: display(); break;
+            case 7: return 0;
+        }
+    }
+}
