@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node* head = NULL;
+
+/* Utility function to create node */
+Node* createNode(int val) {
+    Node *t = (Node*)malloc(sizeof(Node));
+    t->data = val;
+    t->next = NULL;
+    return t;
+}
+
+/* Insert at end for testing */
+void insertLast(int val) {
+    Node *t = createNode(val);
+
+    if (head == NULL) {
+        head = t;
+        return;
+    }
+
+    Node *p = head;
+    while (p->next != NULL)
+        p = p->next;
+
+    p->next = t;
+}
+
+/* Function to check if list is circular */
+int
