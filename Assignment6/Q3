@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *head = NULL;
+
+Node* createNode(int val) {
+    Node *t = (Node*)malloc(sizeof(Node));
+    t->data = val;
+    t->next = NULL;
+    return t;
+}
+
+void insertLast(int val) {
+    Node *t = createNode(val);
+
+    if (!head) {
+        head = t;
+        t->next = t;
+        return;
+    }
+
+    Node *p = head;
+    while (p->next != head) p = p->next;
+
+    p->next = t;
+    t->next = head;
+}
+
+void display() {
+    if (!head) return;
+
+    Node *p = head;
+    printf("Output: ");
+    do {
+        printf("%d ", p->data);
+        p = p->next;
+    } while (p != head);
+    printf("%d\n", head->data);   // repeat head
+}
+
+int main() {
+    insertLast(20);
+    insertLast(100);
+    insertLast(40);
+    insertLast(80);
+    insertLast(60);
+
+    display();
+    return 0;
+}
