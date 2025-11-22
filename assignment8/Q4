@@ -1,0 +1,56 @@
+#include <iostream>
+#include <climits>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+// ---------- Check if BST using min–max range ----------
+bool isBSTUtil(Node* root, long long minVal, long long maxVal) {
+    if (!root) return true;
+
+    if (root->data <= minVal || root->data >= maxVal)
+        return false;
+
+    return isBSTUtil(root->left, minVal, root->data) &&
+           isBSTUtil(root->right, root->data, maxVal);
+}
+
+bool isBST(Node* root) {
+    return isBSTUtil(root, LLONG_MIN, LLONG_MAX);
+}
+
+// ---------- Driver / Demo ----------
+int main() {
+    /*
+            10
+           /  \
+          5   20
+         / \
+        3   8
+    */
+
+    Node* root = new Node(10);
+    root->left = new Node(5);
+    root->right = new Node(20);
+    root->left->left = new Node(3);
+    root->left->right = new Node(8);
+
+    cout << (isBST(root) ? "Tree is a BST\n" : "Tree is NOT a BST\n");
+
+    // Create a non-BST
+    Node* bad = new Node(10);
+    bad->left = new Node(15);   // violates BST rule
+    bad->right = new Node(20);
+
+    cout << (isBST(bad) ? "Tree is a BST\n" : "Tree is NOT a BST\n");
+
+    return 0;
+}
