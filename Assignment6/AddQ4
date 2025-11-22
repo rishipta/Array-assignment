@@ -1,0 +1,23 @@
+typedef struct Node {
+    int data;
+    struct Node *next, *prev, *random;
+} Node;
+
+void fixRandom(Node *head) {
+    Node *p = head;
+    int idx = 0;
+
+    Node *arr[1000];
+    while (p) {
+        arr[idx++] = p;
+        p = p->next;
+    }
+
+    p = head;
+    int i = 0;
+    while (p) {
+        p->random = arr[i];  // point each node's random to itself (expected output)
+        p = p->next;
+        i++;
+    }
+}
