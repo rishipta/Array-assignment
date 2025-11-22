@@ -1,0 +1,21 @@
+void improvedSelectionSort(vector<int>& arr) {
+    int left = 0, right = arr.size() - 1;
+
+    while(left < right) {
+        int minIdx = left, maxIdx = right;
+
+        for(int i = left; i <= right; i++) {
+            if(arr[i] < arr[minIdx]) minIdx = i;
+            if(arr[i] > arr[maxIdx]) maxIdx = i;
+        }
+
+        swap(arr[left], arr[minIdx]);
+
+        if(maxIdx == left) maxIdx = minIdx;
+
+        swap(arr[right], arr[maxIdx]);
+
+        left++;
+        right--;
+    }
+}
